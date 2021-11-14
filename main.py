@@ -10,6 +10,11 @@ screen = pygame.display.set_mode((800, 800))
 
 bg = pygame.image.load("assets/background.png")
 bg = pygame.transform.scale(bg, (800, 800))
+bg2 = pygame.image.load("assets/secondLocation.png")
+bg2 = pygame.transform.scale(bg2, (800, 800))
+bg3 = pygame.image.load("assets/bk3.png")
+bg3 = pygame.transform.scale(bg3, (800, 800))
+
 score = 0
 
 
@@ -30,6 +35,11 @@ class DoodleJump1:
         self.gravity = 0
         self.xmovement = 0
         self.withoutSpring = True
+        self.withoutJet = True
+        self.playerRightRacket = pygame.image.load("assets/racketright (2).png").convert_alpha()
+        self.playerLeftRacket = pygame.image.load("assets/racket.png").convert_alpha()
+        self.playerLeftRacket = pygame.transform.scale(self.playerLeftRacket, (150,150))
+        self.playerRightRacket = pygame.transform.scale(self.playerRightRacket, (150,150))
 
     def updatePlayer(self):
 
@@ -59,31 +69,53 @@ class DoodleJump1:
         elif self.playerx < -50:
             self.playerx = 850
         self.playerx += self.xmovement
-        if (self.withoutSpring):
+        if (self.withoutSpring and self.withoutJet and not self.playerDead):
             if self.playery - self.cameray <= 500:
                 self.cameray -= 5
+        elif (not self.withoutJet and not self.playerDead):
+            if self.playery - self.cameray <= 500:
+                self.cameray -= 90
+                self.visible = False
         else:
             if self.playery - self.cameray <= 500:
                 self.cameray -= 50
+                self.visible = False
+
+
                 # self.visible = False
-        if (self.jump < 2):
+        if (self.jump < 15 and not self.playerDead):
             self.withoutSpring = True
-        if not self.direction and not self.playerDead:
+            self.withoutJet = True
+            self.visible = True
+        if not self.direction and not self.playerDead and self.withoutJet:
             if self.jump:
                 screen.blit(self.playerRight_1, (self.playerx, self.playery - self.cameray))
             else:
                 screen.blit(self.playerRight, (self.playerx, self.playery - self.cameray))
-        elif self.direction and not self.playerDead:
+
+        elif self.direction and not self.playerDead and self.withoutJet:
             if self.jump:
                 screen.blit(self.playerLeft_1, (self.playerx, self.playery - self.cameray))
             else:
                 screen.blit(self.playerLeft, (self.playerx, self.playery - self.cameray))
         if (self.playerDead):
             screen.blit(self.playerDeadImg, (self.playerx, self.playery - self.cameray))
+        if not self.withoutJet:
+            if not self.direction:
+                screen.blit(self.playerRightRacket, (self.playerx, self.playery-self.cameray))
+
+            else:
+                screen.blit(self.playerLeftRacket , (self.playerx, self.playery-self.cameray))
+
 
 
 doodle = DoodleJump1()
 
+class JetPack:
+    def __init__(self):
+        self.jetPackImg = pygame.image.load("assets/Jet.png").convert_alpha()
+        self.jetPacks = []
+        self.rect = self.jetPackImg.get_rect()
 
 class Enemy:
     def __init__(self):
@@ -95,6 +127,7 @@ class Enemy:
 
 
 enemy = Enemy()
+jetPack = JetPack()
 
 
 class Platform:
@@ -145,10 +178,17 @@ class Platform:
                 #
                 self.platforms.append([random.randint(0, 700), self.platforms[-1][1] - 50, platform, 0])
                 #
-                coords2 = self.platforms[-1]
-                check2 = random.randint(0, 1000)
+                coords3 = self.platforms[-1]
+                checkForJetPack = random.randint(0,1000)
 
-                if (check2 > 950 and platform == 0):
+                if (checkForJetPack > 950 and platform == 0):
+                    jetPack.jetPacks.append([coords3[0], coords3[1] - 25, 0])
+                #
+                #
+                coords2 = self.platforms[-1]
+                checkForEnemy = random.randint(0, 1000)
+
+                if (checkForEnemy > 950 and platform == 0):
                     enemy.enemys.append([coords2[0], coords2[1] - 25, 0])
                 #
                 coords = self.platforms[-1]
@@ -170,10 +210,7 @@ class Platform:
         #
         for enem in enemy.enemys:
             screen.blit(enemy.enemyPlayer, (enem[0], enem[1] - doodle.cameray - 69))
-            if (doodle.visible and pygame.Rect(enem[0], enem[1], enemy.enemyPlayer.get_width(),
-                                               enemy.enemyPlayer.get_height() - 69).colliderect(
-                    pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),
-                                doodle.playerRight.get_height()))):
+            if (doodle.visible and pygame.Rect(enem[0], enem[1], enemy.enemyPlayer.get_width(), enemy.enemyPlayer.get_height() - 69).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height()))):
                 doodle.jump = 20
                 doodle.cameray -= 20
                 doodle.gravity = 10
@@ -192,16 +229,21 @@ class Platform:
                 # self.generatePlatforms()
                 # doodle.playerx = 400
                 # doodle.playery = 400
+
+        for jet in jetPack.jetPacks:
+            screen.blit(jetPack.jetPackImg, (jet[0],jet[1]-doodle.cameray-69) )
+            if doodle.visible and pygame.Rect(jet[0],jet[1],jetPack.jetPackImg.get_width(), jetPack.jetPackImg.get_height()-69).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height())):
+                doodle.jump = 100
+                doodle.withoutJet = False
+
+
         #
         for spring in self.springs:
             if spring[-1]:
                 screen.blit(self.spring_1, (spring[0], spring[1] - doodle.cameray))
             else:
                 screen.blit(self.spring, (spring[0], spring[1] - doodle.cameray))
-            if doodle.visible and pygame.Rect(spring[0], spring[1], self.spring.get_width(),
-                                              self.spring.get_height()).colliderect(
-                    pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),
-                                doodle.playerRight.get_height())):
+            if doodle.visible and pygame.Rect(spring[0], spring[1], self.spring.get_width(), self.spring.get_height()).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height())):
                 doodle.jump = 50
                 doodle.withoutSpring = False
 
@@ -232,14 +274,18 @@ class Game:
         platform.generatePlatforms()
         while True:
             clock.tick(60)
-            screen.fill([255, 255, 255])
-            screen.blit(bg, (0, 0))
+            global score
+            if(score<=700):
+                screen.blit(bg, (0, 0))
+            elif (score <= 1000):
+                screen.blit(bg2, (0, 0))
+            elif (score <= 5000000):
+                screen.blit(bg3, (0, 0))
 
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
             if math.fabs(doodle.playery - doodle.cameray > 700):
-                global score
                 doodle.cameray = 0
                 score = 0
                 platform.springs = []
