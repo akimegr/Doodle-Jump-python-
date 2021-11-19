@@ -18,7 +18,7 @@ bg3 = pygame.transform.scale(bg3, (800, 800))
 score = 0
 
 
-class DoodleJump1:
+class DoodleJump:
     def __init__(self):
         self.visible = True
         self.playerRight = pygame.image.load("assets/right.png").convert_alpha()  # player
@@ -109,7 +109,7 @@ class DoodleJump1:
 
 
 
-doodle = DoodleJump1()
+doodle = DoodleJump()
 
 class JetPack:
     def __init__(self):
@@ -266,44 +266,119 @@ class Game:
     def __init__(self):
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 25)
+        self.font2 = pygame.font.SysFont("Arial", 42)
+        self.font3 = pygame.font.SysFont("Arial", 62)
+        self.font4 = pygame.font.SysFont("Arial", 45)
+
+    def maxResult(self):
+        f = open("res.txt", "r")
+
+        max = 0
+        for i in f:
+            i = i.strip("\n")
+            max = int(max)
+            if max<int(i):
+                max = int(i)
+        f.close()
+        return str(max)
+
+    def lastResult(self):
+        f = open("res.txt", "r")
+        a = []
+        for i in f:
+            a.append(i.strip('\n'))
+        f.close()
+        return a[len(a)-2]
+
+
+
 
     def run(self):
-        start = True
+        start = False
         platform = Platform()
         clock = pygame.time.Clock()
         platform.generatePlatforms()
+        wait = True
+        global score
+        check = 0
+
         while True:
-            clock.tick(60)
-            global score
-            if(score<=700):
-                screen.blit(bg, (0, 0))
-            elif (score <= 1000):
-                screen.blit(bg2, (0, 0))
-            elif (score <= 5000000):
-                screen.blit(bg3, (0, 0))
 
-            for event in pygame.event.get():
-                if event.type == QUIT:
+            key = pygame.key.get_pressed()
+
+            for ev in pygame.event.get():
+                if ev.type == QUIT:
                     sys.exit()
-            if math.fabs(doodle.playery - doodle.cameray > 700):
-                doodle.cameray = 0
-                score = 0
-                platform.springs = []
-                platform.platforms = [[400, 500, 0, 0]]
-                platform.generatePlatforms()
-                doodle.playerx = 400
-                doodle.playery = 400
-                doodle.visible = True
-                doodle.playerDead = False
 
-            # platform.drawGrid()
-            platform.drawPlatforms()
-            doodle.updatePlayer()
-            platform.updatePlatforms()
-            screen.blit(self.font.render(str(doodle.playery), -1, (0, 0, 0)), (25, 25))
-            screen.blit(self.font.render(str(doodle.cameray), -1, (0, 0, 0)), (200, 25))
-            screen.blit(self.font.render(str(score), -1, (0, 0, 0)), (400, 25))
-            pygame.display.flip()
+            if(key[K_SPACE]):
+                wait = True
+                start = True
+            while wait:
+                clock.tick(60)
+                # if(not start):
+                #     screen.fill((255, 255, 255))
+                #     screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
+                #     screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
+                #     screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
+                #     screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 400))
+                #     screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 500))
+                #     screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 650))
+
+                if (score <= 700):
+                    screen.blit(bg, (0, 0))
+                elif (score <= 1000):
+                    screen.blit(bg2, (0, 0))
+                elif (score <= 5000000):
+                    screen.blit(bg3, (0, 0))
+
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        sys.exit()
+
+                if math.fabs(doodle.playery - doodle.cameray > 700):
+                    doodle.cameray = 0
+                    f = open("res.txt", "ab+")
+                    f.write((str(score) + '\n').encode())
+                    f.close()
+                    check = score
+                    score = 0
+                    platform.springs = []
+                    platform.platforms = [[400, 500, 0, 0]]
+                    platform.generatePlatforms()
+                    doodle.playerx = 400
+                    doodle.playery = 400
+                    doodle.visible = True
+                    doodle.playerDead = False
+                    wait = False
+
+
+                    # platform.drawGrid()
+                platform.drawPlatforms()
+                doodle.updatePlayer()
+                platform.updatePlatforms()
+                screen.blit(self.font.render(str(doodle.playery), -1, (0, 0, 0)), (25, 25))
+                screen.blit(self.font.render(str(doodle.cameray), -1, (0, 0, 0)), (200, 25))
+                screen.blit(self.font.render(str(score), -1, (0, 0, 0)), (400, 25))
+                if(not wait):
+                    screen.fill((255, 255, 255))
+                    screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
+                    screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
+                    screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
+                    screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 400))
+                    screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 500))
+                    screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 650))
+                if(not start):
+                    wait = False
+                    screen.fill((255, 255, 255))
+                    # screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
+                    # screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
+                    # screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
+                    screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 300))
+                    screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 400))
+                    screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 550))
+
+                pygame.display.flip()
+
 
 
 Game().run()
