@@ -119,28 +119,54 @@ class JetPack:
 
 class Enemy:
     def __init__(self):
-        self.enemyPlayer = pygame.image.load("assets/mnogon.png").convert_alpha()
+        check = random.randint(0,7)
+        if(check==0):
+            self.enemyPlayer = pygame.image.load("assets/mnogon.png").convert_alpha()
+        elif(check==1):
+            self.enemyPlayer = pygame.image.load("assets/mostr1.png").convert_alpha()
+        elif(check==2):
+            self.enemyPlayer = pygame.image.load("assets/mostr2.png").convert_alpha()
+        elif(check==3):
+            self.enemyPlayer = pygame.image.load("assets/mostr3.png").convert_alpha()
+        elif(check==4):
+            self.enemyPlayer = pygame.image.load("assets/mostr4.png").convert_alpha()
+        elif(check==5):
+            self.enemyPlayer = pygame.image.load("assets/mostr5.png").convert_alpha()
+        else:
+            self.enemyPlayer = pygame.image.load("assets/mosntr6.png").convert_alpha()
+
         self.enemys = []
         self.rect = self.enemyPlayer.get_rect()
         self.enemyPlayer = pygame.transform.scale(self.enemyPlayer, (100, 100))
         self.enemyPlayer.set_colorkey((255, 255, 255))
 
+# class NLO(Enemy):
+#     super.enemyPlayer = pygame.image.load("assets/nlo.png").convert_alpha()
+
 
 enemy = Enemy()
 jetPack = JetPack()
+masEnemy = []
 
-
-class Platform:
+class Spring:
     def __init__(self):
-        self.green = pygame.image.load("assets/green.png").convert_alpha()
-        self.platforms = [[400, 500, 0, 0]]  # ширина где появ,
         self.spring = pygame.image.load("assets/spring.png").convert_alpha()  # spring
         self.spring_1 = pygame.image.load("assets/spring_1.png").convert_alpha()  # spring
         self.springs = []
+springForGreen = Spring()
+
+
+class Platform:
+
+    def __init__(self):
+        self.green = pygame.image.load("assets/green.png").convert_alpha()
+        self.platforms = [[400, 500, 0, 0]]  # ширина где появ,
+
         self.blue = pygame.image.load(
             "assets/blue.png").convert_alpha()  # platform move #используются для преобразования поверхностей в тот же формат пикселей, что и на экране
         self.red = pygame.image.load("assets/red.png").convert_alpha()  # platform hurt
         self.red_1 = pygame.image.load("assets/red_1.png").convert_alpha()  # platform hurt2
+
 
     def updatePlatforms(self):
         for p in self.platforms:
@@ -188,13 +214,15 @@ class Platform:
                 coords2 = self.platforms[-1]
                 checkForEnemy = random.randint(0, 1000)
 
-                if (checkForEnemy > 950 and platform == 0):
+                if (checkForEnemy > 940 and platform == 0):
+                    newEnemy = Enemy()
+                    masEnemy.append(newEnemy)
                     enemy.enemys.append([coords2[0], coords2[1] - 25, 0])
                 #
                 coords = self.platforms[-1]
                 check = random.randint(0, 1000)
-                if check > 900 and platform == 0:  # шанс рандом для пружины
-                    self.springs.append([coords[0], coords[1] - 25, 0])
+                if check > 950 and platform == 0:  # шанс рандом для пружины
+                    springForGreen.springs.append([coords[0], coords[1] - 25, 0])
                 self.platforms.pop(0)
                 global score
                 score += 100
@@ -208,42 +236,34 @@ class Platform:
                 else:
                     screen.blit(self.red_1, (p[0], p[1] - doodle.cameray))
         #
-        for enem in enemy.enemys:
-            screen.blit(enemy.enemyPlayer, (enem[0], enem[1] - doodle.cameray - 69))
-            if (doodle.visible and pygame.Rect(enem[0], enem[1], enemy.enemyPlayer.get_width(), enemy.enemyPlayer.get_height() - 69).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height()))):
-                doodle.jump = 20
-                doodle.cameray -= 20
-                doodle.gravity = 10
-                doodle.cameray += 10
-                doodle.visible = False
-                doodle.playerDead = True
+        if(masEnemy):
+            count = 0
+            for enem in enemy.enemys:
+                screen.blit(masEnemy[count].enemyPlayer, (enem[0], enem[1] - doodle.cameray - 53))
+                if (doodle.visible and pygame.Rect(enem[0], enem[1], masEnemy[len(masEnemy)-1].enemyPlayer.get_width(), masEnemy[len(masEnemy)-1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height()))):
+                    doodle.jump = 20
+                    doodle.cameray -= 20
+                    doodle.gravity = 10
+                    doodle.cameray += 10
+                    doodle.visible = False
+                    doodle.playerDead = True
+                count+=1
 
-                # while doodle.cameray!=0:
-                #     doodle.cameray+=1
-                #     doodle.playery+=1
-                #     doodle.updatePlayer()
-                #
-                # score = 0
-                # self.springs = []
-                # self.platforms = [[400, 500, 0, 0]]
-                # self.generatePlatforms()
-                # doodle.playerx = 400
-                # doodle.playery = 400
 
         for jet in jetPack.jetPacks:
-            screen.blit(jetPack.jetPackImg, (jet[0],jet[1]-doodle.cameray-69) )
-            if doodle.visible and pygame.Rect(jet[0],jet[1],jetPack.jetPackImg.get_width(), jetPack.jetPackImg.get_height()-69).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height())):
+            screen.blit(jetPack.jetPackImg, (jet[0],jet[1]-doodle.cameray-53) )
+            if doodle.visible and pygame.Rect(jet[0],jet[1],jetPack.jetPackImg.get_width(), jetPack.jetPackImg.get_height()-53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height())):
                 doodle.jump = 100
                 doodle.withoutJet = False
 
 
         #
-        for spring in self.springs:
+        for spring in springForGreen.springs:
             if spring[-1]:
-                screen.blit(self.spring_1, (spring[0], spring[1] - doodle.cameray))
+                screen.blit(springForGreen.spring_1, (spring[0], spring[1] - doodle.cameray))
             else:
-                screen.blit(self.spring, (spring[0], spring[1] - doodle.cameray))
-            if doodle.visible and pygame.Rect(spring[0], spring[1], self.spring.get_width(), self.spring.get_height()).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height())):
+                screen.blit(springForGreen.spring, (spring[0], spring[1] - doodle.cameray))
+            if doodle.visible and pygame.Rect(spring[0], spring[1], springForGreen.spring.get_width(), springForGreen.spring.get_height()).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height())):
                 doodle.jump = 50
                 doodle.withoutSpring = False
 
@@ -315,15 +335,6 @@ class Game:
                 start = True
             while wait:
                 clock.tick(60)
-                # if(not start):
-                #     screen.fill((255, 255, 255))
-                #     screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
-                #     screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
-                #     screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
-                #     screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 400))
-                #     screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 500))
-                #     screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 650))
-
                 if (score <= 700):
                     screen.blit(bg, (0, 0))
                 elif (score <= 1000):
@@ -335,14 +346,16 @@ class Game:
                     if event.type == QUIT:
                         sys.exit()
 
-                if math.fabs(doodle.playery - doodle.cameray > 700):
+                if math.fabs(doodle.playery - doodle.cameray > 740):
                     doodle.cameray = 0
                     f = open("res.txt", "ab+")
                     f.write((str(score) + '\n').encode())
                     f.close()
                     check = score
                     score = 0
-                    platform.springs = []
+                    springForGreen.springs = []
+                    enemy.enemys =[]
+                    jetPack.jetPacks = []
                     platform.platforms = [[400, 500, 0, 0]]
                     platform.generatePlatforms()
                     doodle.playerx = 400
@@ -370,9 +383,6 @@ class Game:
                 if(not start):
                     wait = False
                     screen.fill((255, 255, 255))
-                    # screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
-                    # screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
-                    # screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
                     screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 300))
                     screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 400))
                     screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 550))
