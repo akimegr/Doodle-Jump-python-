@@ -1,6 +1,7 @@
 import pygame
 
 screen = pygame.display.set_mode((800, 800))
+pygame.display.set_caption('doodle jump')
 score = 0
 pygame.init()
 pygame.mixer.music.load("sounds/intro.mp3")
