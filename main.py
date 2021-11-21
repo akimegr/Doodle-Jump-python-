@@ -142,7 +142,8 @@ class Enemy:
 class NLO(Enemy):
     def __init__(self):
         Enemy.__init__(self)
-        self.enemyPlayer = pygame.image.load("assets/nlo.png").convert_alpha()
+        self.enemyPlayerEnd = pygame.image.load("assets/nlo.png").convert_alpha()
+        self.enemyPlayer = pygame.image.load("assets/nloFirst.png").convert_alpha()
     def updateNlos(self):
         for p in self.enemys:
                 if p[-1] == 1:
@@ -233,7 +234,7 @@ class Platform:
                 #
                 coords = self.platforms[-1]
                 checkForNlo = random.randint(0, 1000)
-                if (checkForNlo > 540 and platform == 0):
+                if (checkForNlo > 940 and platform == 0):
                     nlo.enemys.append([coords[0], coords2[1] - 25, 0])
                 check = random.randint(0, 1000)
                 if check > 950 and platform == 0:  # шанс рандом для пружины
@@ -274,16 +275,15 @@ class Platform:
         for newNlo in nlo.enemys:
             screen.blit(nlo.enemyPlayer, (newNlo[0], newNlo[1] - doodle.cameray - 53))
 
-            if (doodle.visible and pygame.Rect(newNlo[0], newNlo[1], nlo.enemyPlayer.get_width(),
-                                               nlo.enemyPlayer.get_height() - 53).colliderect(
-                    pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),
-                                doodle.playerRight.get_height()))):
-                doodle.jump = 20
-                doodle.cameray -= 20
-                doodle.gravity = 10
-                doodle.cameray += 10
+            if (doodle.visible and pygame.Rect(newNlo[0], newNlo[1], nlo.enemyPlayer.get_width(),nlo.enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
+                doodle.jump = 5
+                doodle.cameray -= 1
+                doodle.gravity = 1
+                doodle.cameray += 5
                 doodle.visible = False
                 doodle.playerDead = True
+                nlo.enemyPlayer = nlo.enemyPlayerEnd
+
 
 
         #
@@ -385,6 +385,8 @@ class Game:
                     springForGreen.springs = []
                     enemy.enemys =[]
                     jetPack.jetPacks = []
+                    nlo.enemys = []
+                    nlo.enemyPlayer = pygame.image.load("assets/nloFirst.png").convert_alpha()
                     platform.platforms = [[400, 500, 0, 0]]
                     platform.generatePlatforms()
                     doodle.playerx = 400
