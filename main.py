@@ -11,24 +11,8 @@ from NLO import *
 from Spring import *
 from Platform import *
 import pygame
+chanceJet = 950
 
-screen = pygame.display.set_mode((800, 800))
-score = 0
-pygame.init()
-pygame.mixer.music.load("sounds/intro.mp3")
-pygame.mixer.music.set_volume(1)
-jump_sound = pygame.mixer.Sound('sounds/jump.wav')
-jump_sound.set_volume(0.2)
-deadMostr_sound = pygame.mixer.Sound('sounds/deadMostr.wav')
-deadMostr_sound.set_volume(0.2)
-deadNLO_sound = pygame.mixer.Sound('sounds/deadNLO.wav')
-deadNLO_sound.set_volume(0.2)
-
-pow_sound = pygame.mixer.Sound("sounds/pow.wav")
-pow_sound.set_volume(0.2)
-
-spring_sound = pygame.mixer.Sound("sounds/spring.wav")
-spring_sound.set_volume(0.2)
 
 
 doodle = DoodleJump()
@@ -38,7 +22,7 @@ jetPack = JetPack()
 masEnemy = []
 springForGreen = Spring()
 plat = Platform()
-
+chanceEnemy = 940
 
 class Game:
     def __init__(self):
@@ -176,15 +160,19 @@ class Game:
                 #
                 coords3 = plat.platforms[-1]
                 checkForJetPack = random.randint(0,1000)
-
-                if (checkForJetPack > 950 and platform == 0):
+                global chanceEnemy, score, chanceJet
+                if(score%15000==0):
+                    chanceJet-=10
+                if (checkForJetPack > chanceJet and platform == 0):
                     jetPack.jetPacks.append([coords3[0], coords3[1] - 25, 0])
                 #
                 #
                 coords2 = plat.platforms[-1]
                 checkForEnemy = random.randint(0, 1000)
 
-                if (checkForEnemy > 940 and platform == 0):
+                if(score%15000==0):
+                    chanceEnemy-=20
+                if (checkForEnemy > chanceEnemy and platform == 0):
                     newEnemy = Enemy()
                     masEnemy.append(newEnemy)
                     enemy.enemys.append([coords2[0], coords2[1] - 25, 0])
@@ -197,7 +185,6 @@ class Game:
                 if check > 950 and platform == 0:  # шанс рандом для пружины
                     springForGreen.springs.append([coords[0], coords[1] - 25, 0])
                 plat.platforms.pop(0)
-                global score
                 score += 100
             if p[2] == 0:  # прорисовка зелёных
                 screen.blit(plat.green, (p[0], p[1] - doodle.cameray))
