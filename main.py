@@ -137,14 +137,26 @@ class Enemy:
 
         self.enemys = []
         self.rect = self.enemyPlayer.get_rect()
-        self.enemyPlayer = pygame.transform.scale(self.enemyPlayer, (100, 100))
-        self.enemyPlayer.set_colorkey((255, 255, 255))
 
-# class NLO(Enemy):
-#     super.enemyPlayer = pygame.image.load("assets/nlo.png").convert_alpha()
+
+class NLO(Enemy):
+    def __init__(self):
+        Enemy.__init__(self)
+        self.enemyPlayer = pygame.image.load("assets/nlo.png").convert_alpha()
+    def updateNlos(self):
+        for p in self.enemys:
+                if p[-1] == 1:
+                    p[0] += 1
+                    if p[0] > 550:
+                        p[-1] = 0
+                else:
+                    p[0] -= 1
+                    if p[0] <= 0:
+                        p[-1] = 1
 
 
 enemy = Enemy()
+nlo = NLO()
 jetPack = JetPack()
 masEnemy = []
 
@@ -220,6 +232,9 @@ class Platform:
                     enemy.enemys.append([coords2[0], coords2[1] - 25, 0])
                 #
                 coords = self.platforms[-1]
+                checkForNlo = random.randint(0, 1000)
+                if (checkForNlo > 540 and platform == 0):
+                    nlo.enemys.append([coords[0], coords2[1] - 25, 0])
                 check = random.randint(0, 1000)
                 if check > 950 and platform == 0:  # шанс рандом для пружины
                     springForGreen.springs.append([coords[0], coords[1] - 25, 0])
@@ -255,6 +270,20 @@ class Platform:
             if doodle.visible and pygame.Rect(jet[0],jet[1],jetPack.jetPackImg.get_width(), jetPack.jetPackImg.get_height()-53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height())):
                 doodle.jump = 100
                 doodle.withoutJet = False
+
+        for newNlo in nlo.enemys:
+            screen.blit(nlo.enemyPlayer, (newNlo[0], newNlo[1] - doodle.cameray - 53))
+
+            if (doodle.visible and pygame.Rect(newNlo[0], newNlo[1], nlo.enemyPlayer.get_width(),
+                                               nlo.enemyPlayer.get_height() - 53).colliderect(
+                    pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),
+                                doodle.playerRight.get_height()))):
+                doodle.jump = 20
+                doodle.cameray -= 20
+                doodle.gravity = 10
+                doodle.cameray += 10
+                doodle.visible = False
+                doodle.playerDead = True
 
 
         #
@@ -369,6 +398,7 @@ class Game:
                 platform.drawPlatforms()
                 doodle.updatePlayer()
                 platform.updatePlatforms()
+                nlo.updateNlos()
                 screen.blit(self.font.render(str(doodle.playery), -1, (0, 0, 0)), (25, 25))
                 screen.blit(self.font.render(str(doodle.cameray), -1, (0, 0, 0)), (200, 25))
                 screen.blit(self.font.render(str(score), -1, (0, 0, 0)), (400, 25))
