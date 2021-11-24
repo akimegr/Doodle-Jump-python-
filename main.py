@@ -268,6 +268,13 @@ class Game:
             while wait:
                 pygame.mixer.music.play(-1)
                 clock.tick(60)
+                key = pygame.key.get_pressed()
+                for ev in pygame.event.get():
+                    if ev.type == QUIT:
+                        sys.exit()
+                if(key[K_ESCAPE]):
+                    wait = False
+                    start = False
                 if (score <= 700):
                     screen.blit(bg, (0, 0))
                 elif (score <= 1000):
