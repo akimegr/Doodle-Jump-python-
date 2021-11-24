@@ -55,13 +55,13 @@ class Game:
     def updatePlayer(self):
         if not doodle.jump:
             doodle.playery += doodle.gravity
-            doodle.gravity += 1  # вниз
+            doodle.gravity += 1
         elif doodle.jump:
-            doodle.playery -= doodle.jump  # вверх?
+            doodle.playery -= doodle.jump
             doodle.jump -= 1
         if(doodle.jump and doodle.withoutJet and doodle.withoutSpring):
             pygame.mixer.Sound.play(jump_sound)
-        key = pygame.key.get_pressed()  # для зажатия клавиши
+        key = pygame.key.get_pressed()
         if key[K_RIGHT]:
             if doodle.xmovement < 12:  # максимальная скорость
                 doodle.xmovement += 1

@@ -5,15 +5,15 @@ from pygame.locals import *
 class DoodleJump:
     def __init__(self):
         self.visible = True
-        self.playerRight = pygame.image.load("assets/right.png").convert_alpha()  # player
-        self.playerRight_1 = pygame.image.load("assets/right_1.png").convert_alpha()  # player
-        self.playerLeft = pygame.image.load("assets/left.png").convert_alpha()  # player
-        self.playerLeft_1 = pygame.image.load("assets/left_1.png").convert_alpha()  # player
+        self.playerRight = pygame.image.load("assets/right.png").convert_alpha()
+        self.playerRight_1 = pygame.image.load("assets/right_1.png").convert_alpha()
+        self.playerLeft = pygame.image.load("assets/left.png").convert_alpha()
+        self.playerLeft_1 = pygame.image.load("assets/left_1.png").convert_alpha()
         self.playerDeadImg = pygame.image.load("assets/deadDoodle.png").convert_alpha()
         self.playerDead = False
-        self.direction = 0  # player
-        self.playerx = 400  # player
-        self.playery = 400  # player
+        self.direction = 0
+        self.playerx = 400
+        self.playery = 400
         self.cameray = 0
         self.jump = 0
         self.gravity = 0
