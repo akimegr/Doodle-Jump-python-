@@ -14,7 +14,7 @@ from  Bullet import *
 import pygame
 from Bullet import *
 
-chanceJet = 950
+chanceJet = 970
 
 
 
@@ -194,7 +194,7 @@ class Game:
                 checkForJetPack = random.randint(0,1000)
                 global chanceEnemy, score, chanceJet
                 if(score%350000==0):
-                    chanceJet-=10
+                    chanceJet-=5
                 if (checkForJetPack > chanceJet and platform == 0):
                     jetPack.jetPacks.append([coords3[0], coords3[1] - 25, 0])
                 #
@@ -362,7 +362,7 @@ class Game:
                     f.write((str(score) + '\n').encode())
                     f.close()
                     check = score
-                    score = 0
+                    score = 1
                     scoreEnemy = 0
                     springForGreen.springs = []
                     enemy.enemys =[]
