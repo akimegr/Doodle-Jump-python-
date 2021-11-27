@@ -175,7 +175,7 @@ class Game:
     def drawBullet(self, x, y):
         screen.blit(self.bullet_png, (x+5, y))
 
-    def drawPlatforms(self):
+    def drawPlatforms(self, timeShootImg):
         global masEnemy2, masEnemy
         for p in plat.platforms:
             check = plat.platforms[1][1] - doodle.cameray
@@ -203,7 +203,7 @@ class Game:
                 checkForEnemy = random.randint(0, 1000)
 
                 if(score%350000==0):
-                    chanceEnemy-=20
+                    chanceEnemy-=5
                 if (checkForEnemy > chanceEnemy and platform == 0):
                     newEnemy = Enemy()
                     masEnemy.append(newEnemy)
@@ -211,7 +211,7 @@ class Game:
                 #
                 coords = plat.platforms[-1]
                 checkForNlo = random.randint(0, 1000)
-                if (checkForNlo > 740 and platform == 0):
+                if (checkForNlo > 970 and platform == 0):
                     newEnemy = NLO()
                     masEnemy2.append(newEnemy)
                     nlo.enemys.append([coords2[0], coords2[1] - 25, 0])
@@ -256,7 +256,11 @@ class Game:
             for newNlo in nlo.enemys:
 
                 count = 0
-                screen.blit(masEnemy2[count].enemyPlayer, (newNlo[0], newNlo[1] - doodle.cameray - 53))
+                global checkSoungShoot
+                if timeShootImg%15!=0:
+                    print(timeShootImg)
+                    screen.blit(masEnemy2[count].enemyPlayer, (newNlo[0], newNlo[1] - doodle.cameray - 53))
+
 
                 if (doodle.visible and pygame.Rect(newNlo[0], newNlo[1],masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
                     pygame.mixer.Sound.play(deadNLO_sound)
@@ -378,19 +382,19 @@ class Game:
 
 
                     # platform.drawGrid()
-                self.drawPlatforms()
+                self.drawPlatforms(timeShootImg)
                 self.updatePlayer()
                 self.updatePlatforms()
                 nlo.updateNlos()
                 global checkForshot, checkSoungShoot
                 if (doodle.direction != 2):
                     checkForshot = doodle.direction
-                    print(checkForshot)
+                    # print(checkForshot)
                 else:
                     if(timeShootImg%25==0):
                         checkSoungShoot += 1
                         doodle.direction = checkForshot
-                        print("d" + str(doodle.direction))
+                        # print("d" + str(doodle.direction))
                 doodle.shoot()
                 # if(doodle.bullets):
                     # screen.blit(doodle.playerShoot, (doodle.playerx, doodle.playery - doodle.cameray))
