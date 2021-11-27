@@ -1,6 +1,9 @@
+import math
+
 import pygame
 from pygame.locals import *
-
+import sys
+from Bullet import *
 
 class DoodleJump:
     def __init__(self):
@@ -10,6 +13,8 @@ class DoodleJump:
         self.playerLeft = pygame.image.load("assets/left.png").convert_alpha()
         self.playerLeft_1 = pygame.image.load("assets/left_1.png").convert_alpha()
         self.playerDeadImg = pygame.image.load("assets/deadDoodle.png").convert_alpha()
+        self.playerShoot = pygame.image.load("assets/shotingDoodle.png").convert_alpha()
+        self.playerShoot = pygame.transform.scale(self.playerShoot,(90,90))
         self.playerDead = False
         self.direction = 0
         self.playerx = 400
@@ -24,6 +29,30 @@ class DoodleJump:
         self.playerLeftRacket = pygame.image.load("assets/racket.png").convert_alpha()
         self.playerLeftRacket = pygame.transform.scale(self.playerLeftRacket, (150,150))
         self.playerRightRacket = pygame.transform.scale(self.playerRightRacket, (150,150))
+        self.bullets = []
+        self.cool_down_counts = 0
+
+    def coolDown(self):
+        if self.cool_down_counts > 50:
+           self.cool_down_counts = 0
+        elif self.cool_down_counts > 0:
+           self.cool_down_counts += 1
+
+    def shoot(self):
+        key = pygame.key.get_pressed()
+        self.coolDown()
+        for ev in pygame.event.get():
+            if ev.type == QUIT:
+                sys.exit()
+
+        if (key[K_SPACE] and self.cool_down_counts==0):
+            bullet = Bullet(self.playerx, self.playery+math.fabs(self.cameray), self.playery)
+            self.bullets.append(bullet)
+            self.cool_down_counts = 1
+            self.direction = 2
 
 
-
+        for bullet in self.bullets:
+            bullet.move()
+            if(bullet.off_screen()):
+                self.bullets.remove(bullet)

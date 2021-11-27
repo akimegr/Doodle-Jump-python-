@@ -8,6 +8,11 @@ class NLO(Enemy):
         self.enemyPlayer = pygame.image.load("assets/nloFirst.png").convert_alpha()
     def updateNlos(self):
         for p in self.enemys:
+                if(p[0]%3==0):
+                    # print(p[0])
+                    self.enemyPlayer = pygame.image.load("assets/bac.png")
+                else:
+                    self.enemyPlayer = pygame.image.load("assets/nloFirst.png").convert_alpha()
                 if p[-1] == 1:
                     p[0] += 1
                     if p[0] > 550:

@@ -4,6 +4,9 @@ import pygame
 class Enemy:
     def __init__(self):
         check = random.randint(0,7)
+        self.enemyPlayerEmpty = pygame.image.load("assets/mnogon.png").convert_alpha()
+        self.enemyPlayerEmpty = pygame.transform.scale(self.enemyPlayerEmpty,(0,0))
+        self.enemyPlayer = 0
         if(check==0):
             self.enemyPlayer = pygame.image.load("assets/mnogon.png").convert_alpha()
         elif(check==1):
