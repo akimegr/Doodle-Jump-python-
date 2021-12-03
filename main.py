@@ -43,7 +43,7 @@ class Game:
         self.font3 = pygame.font.SysFont("Arial", 62)
         self.font4 = pygame.font.SysFont("Arial", 45)
         self.bullet_png = pygame.image.load("assets/bac.png")
-        self.bullet_png = pygame.transform.scale(self.bullet_png, (20,20))
+        self.bullet_png = pygame.transform.scale(self.bullet_png, (10,10))
 
     def maxResult(self):
         f = open("res.txt", "r")
@@ -211,7 +211,7 @@ class Game:
                 #
                 coords = plat.platforms[-1]
                 checkForNlo = random.randint(0, 1000)
-                if (checkForNlo > 970 and platform == 0):
+                if (checkForNlo > 980 and platform == 0):
                     newEnemy = NLO()
                     masEnemy2.append(newEnemy)
                     nlo.enemys.append([coords2[0], coords2[1] - 25, 0])
@@ -258,9 +258,8 @@ class Game:
                 count = 0
                 global checkSoungShoot
                 if timeShootImg%15!=0:
-                    print(timeShootImg)
+                    # print(timeShootImg)
                     screen.blit(masEnemy2[count].enemyPlayer, (newNlo[0], newNlo[1] - doodle.cameray - 53))
-
 
                 if (doodle.visible and pygame.Rect(newNlo[0], newNlo[1],masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
                     pygame.mixer.Sound.play(deadNLO_sound)
@@ -301,9 +300,10 @@ class Game:
                 countEnemy+=1
             countEnemy = 0
             for newNlo in nlo.enemys:
-
+                print("bul.x" + str(bul.x) + " bul.realY+" + str(bul.realY)+ " newNlo[0]" + str(newNlo[0]) + " newNlo[1]" + str(newNlo[1]))
+                print("masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width()" + str(masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width()) + "masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width()" + str(masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width()))
+                # print("self.bullet_png.get_width() "+str(masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width()) +" "+ str(masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height()) )
                 if pygame.Rect(bul.x, bul.realY, self.bullet_png.get_width(), self.bullet_png.get_height()).colliderect(newNlo[0], newNlo[1],  masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53):
-
                     newNlo[0] = -1000
                     newNlo[1] = 1000
                     doodle.bullets.remove(bul)

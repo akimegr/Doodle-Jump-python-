@@ -8,8 +8,8 @@ class Bullet:
 
 
     def move(self):
-        self.y -= 100
-        self.realY-=100
+        self.y -= 20
+        self.realY-=20
 
     def off_screen(self):
         return not self.y>0
