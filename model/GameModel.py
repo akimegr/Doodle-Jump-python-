@@ -1,18 +1,12 @@
-import time
-import math
-
-import sys
-import random
-from settings import *
-from Doodle import *
-from JetPack import *
-from Enemy import *
-from NLO import *
-from Spring import *
-from Platform import *
-from  Bullet import *
-import pygame
-from Bullet import *
+from util.settings import *
+from util.Doodle import *
+from util.JetPack import *
+from util.NLO import *
+from util.Spring import *
+from util.Platform import *
+from util.Bullets import *
+from view.GameView import doodleDraw
+from view.GameView import drawPlatforms
 
 chanceJet = 970
 
@@ -42,28 +36,8 @@ class Game:
         self.font2 = pygame.font.SysFont("Arial", 42)
         self.font3 = pygame.font.SysFont("Arial", 62)
         self.font4 = pygame.font.SysFont("Arial", 45)
-        self.bullet_png = pygame.image.load("assets/bac.png")
+        self.bullet_png = pygame.image.load("../assets/bac.png")
         self.bullet_png = pygame.transform.scale(self.bullet_png, (10,10))
-
-    def maxResult(self):
-        f = open("res.txt", "r")
-
-        max = 0
-        for i in f:
-            i = i.strip("\n")
-            max = int(max)
-            if max<int(i):
-                max = int(i)
-        f.close()
-        return str(max)
-
-    def lastResult(self):
-        f = open("res.txt", "r")
-        a = []
-        for i in f:
-            a.append(i.strip('\n'))
-        f.close()
-        return a[len(a)-2]
 
     def updatePlayer(self):
         if not doodle.jump:
@@ -120,35 +94,7 @@ class Game:
             doodle.visible = True
         global checkDirection, checkSoungShoot
 
-        if(doodle.direction==2 and not doodle.playerDead and doodle.withoutJet):
-            screen.blit(doodle.playerShoot, (doodle.playerx, doodle.playery - doodle.cameray))
-            if checkSoungShoot == 0:
-                pygame.mixer.Sound.play(soundshoot)
-
-
-        elif doodle.direction==0 and not doodle.playerDead and doodle.withoutJet:
-            checkSoungShoot = 0
-            if doodle.jump:
-                screen.blit(doodle.playerRight_1, (doodle.playerx, doodle.playery - doodle.cameray))
-            else:
-                screen.blit(doodle.playerRight, (doodle.playerx, doodle.playery - doodle.cameray))
-
-        elif(doodle.direction==1 and not doodle.playerDead and doodle.withoutJet):
-            checkSoungShoot = 0
-            if doodle.jump:
-                screen.blit(doodle.playerLeft_1, (doodle.playerx, doodle.playery - doodle.cameray))
-            else:
-                screen.blit(doodle.playerLeft, (doodle.playerx, doodle.playery - doodle.cameray))
-
-        if (doodle.playerDead):
-            screen.blit(doodle.playerDeadImg, (doodle.playerx, doodle.playery - doodle.cameray))
-        if not doodle.withoutJet:
-            if not doodle.direction:
-                screen.blit(doodle.playerRightRacket, (doodle.playerx, doodle.playery-doodle.cameray))
-
-            else:
-                screen.blit(doodle.playerLeftRacket , (doodle.playerx, doodle.playery-doodle.cameray))
-
+        doodleDraw(doodle)
 
     def updatePlatforms(self):
         for p in plat.platforms:
@@ -175,7 +121,7 @@ class Game:
     def drawBullet(self, x, y):
         screen.blit(self.bullet_png, (x+5, y))
 
-    def drawPlatforms(self, timeShootImg):
+    def logicPlatforms(self, timeShootImg):
         global masEnemy2, masEnemy
         for p in plat.platforms:
             check = plat.platforms[1][1] - doodle.cameray
@@ -220,15 +166,7 @@ class Game:
                     springForGreen.springs.append([coords[0], coords[1] - 25, 0])
                 plat.platforms.pop(0)
                 score += 100
-            if p[2] == 0:  # прорисовка зелёных
-                screen.blit(plat.green, (p[0], p[1] - doodle.cameray))
-            elif p[2] == 1:  # прорисовка синих
-                screen.blit(plat.blue, (p[0], p[1] - doodle.cameray))
-            elif p[2] == 2:
-                if not p[3]:
-                    screen.blit(plat.red, (p[0], p[1] - doodle.cameray))
-                else:
-                    screen.blit(plat.red_1, (p[0], p[1] - doodle.cameray))
+            drawPlatforms(p,plat, doodle)
         #
         if(masEnemy):
             count = 0
@@ -358,7 +296,7 @@ class Game:
                 if math.fabs(doodle.playery - doodle.cameray > 740):
                     global masEnemy2, masEnemy
                     doodle.cameray = 0
-                    f = open("res.txt", "ab+")
+                    f = open("../res.txt", "ab+")
                     f.write((str(score) + '\n').encode())
                     f.close()
                     check = score
@@ -369,9 +307,10 @@ class Game:
 
                     jetPack.jetPacks = []
                     nlo.enemys = []
-                    nlo.enemyPlayer = pygame.image.load("assets/nloFirst.png").convert_alpha()
+                    nlo.enemyPlayer = pygame.image.load("../assets/nloFirst.png").convert_alpha()
                     masEnemy2 = []
                     masEnemy = []
+                    doodle.bullets = []
                     plat.platforms = [[400, 500, 0, 0]]
                     plat.generatePlatforms()
                     doodle.playerx = 400
@@ -382,7 +321,7 @@ class Game:
 
 
                     # platform.drawGrid()
-                self.drawPlatforms(timeShootImg)
+                self.logicPlatforms(timeShootImg)
                 self.updatePlayer()
                 self.updatePlatforms()
                 nlo.updateNlos()
@@ -413,16 +352,16 @@ class Game:
                     screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
                     screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
                     screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
-                    screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 400))
-                    screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 500))
+                    screen.blit(self.font2.render(str("Последний результат: " + lastResult()), -1, (255, 0, 0)), (190, 400))
+                    screen.blit(self.font3.render(str("Рекорд " + str(maxResult())), -1, (0, 0, 255)), (260, 500))
                     screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 650))
                     pygame.mixer.music.unpause()
 
                 if(not start):
                     wait = False
                     screen.fill((255, 255, 255))
-                    screen.blit(self.font2.render(str("Последний результат: " + self.lastResult()), -1, (255, 0, 0)), (190, 300))
-                    screen.blit(self.font3.render(str("Рекорд " + str(self.maxResult())), -1, (0, 0, 255)), (260, 400))
+                    screen.blit(self.font2.render(str("Последний результат: " + lastResult()), -1, (255, 0, 0)), (190, 300))
+                    screen.blit(self.font3.render(str("Рекорд " + str(maxResult())), -1, (0, 0, 255)), (260, 400))
                     screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 550))
                     pygame.mixer.music.unpause()
 
@@ -430,5 +369,3 @@ class Game:
                 pygame.display.flip()
 
 
-
-Game().run()

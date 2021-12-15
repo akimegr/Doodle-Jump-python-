@@ -4,13 +4,13 @@ import random
 class Platform:
 
     def __init__(self):
-        self.green = pygame.image.load("assets/green.png").convert_alpha()
+        self.green = pygame.image.load("../assets/green.png").convert_alpha()
         self.platforms = [[400, 500, 0, 0]]
 
         self.blue = pygame.image.load(
-            "assets/blue.png").convert_alpha()  #ипикселей, что и на экране
-        self.red = pygame.image.load("assets/red.png").convert_alpha()
-        self.red_1 = pygame.image.load("assets/red_1.png").convert_alpha()
+            "../assets/blue.png").convert_alpha()  #ипикселей, что и на экране
+        self.red = pygame.image.load("../assets/red.png").convert_alpha()
+        self.red_1 = pygame.image.load("../assets/red_1.png").convert_alpha()
 
 
 
