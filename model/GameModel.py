@@ -28,7 +28,7 @@ checkSoungShoot = 0
 
 
 
-chanceEnemy = 640
+chanceEnemy = 940
 
 
 class Game:
@@ -139,7 +139,7 @@ class Game:
                 else:
                     platform = 2
                 #
-                plat.platforms.append([random.randint(0, 700), plat.platforms[-1][1] - 50, platform, 0])
+                plat.platforms.append([random.randint(0, 700), plat.platforms[-1][1] - 50, platform, 0, 0])
                 #
                 coords3 = plat.platforms[-1]
                 checkForJetPack = random.randint(0,1000)
@@ -148,7 +148,8 @@ class Game:
                     chanceJet-=5
                 if (score % 50000 == 1):
                     chanceGreenPlatfrom-=100
-                if (checkForJetPack > chanceJet and platform == 0):
+                if (checkForJetPack > chanceJet and platform == 0 and plat.platforms[-1][-2]!=1):
+                    plat.platforms[-1][-2] = 1
                     jetPack.jetPacks.append([coords3[0], coords3[1] - 25, 0])   #на последнюю вещаем
                 #
                 #
@@ -157,7 +158,8 @@ class Game:
 
                 if(score%350000==0):
                     chanceEnemy-=5
-                if (checkForEnemy > chanceEnemy and platform == 0):
+                if (checkForEnemy > chanceEnemy and platform == 0 and plat.platforms[-1][-2]!=1):
+                    plat.platforms[-1][-2] = 1
                     newEnemy = Enemy()
                     masEnemy.append(newEnemy)
                     enemy.enemys.append([coords2[0], coords2[1] - 25, 0])
@@ -169,7 +171,8 @@ class Game:
                     masEnemy2.append(newEnemy)
                     nlo.enemys.append([coords2[0], coords2[1] - 25, 0])
                 check = random.randint(0, 1000)
-                if check > 950 and platform == 0:  # шанс рандом для пружины
+                if check > 950 and platform == 0 and plat.platforms[-1][-2]!=1:  # шанс рандом для пружины
+                    plat.platforms[-1][-2] = 1
                     springForGreen.springs.append([coords[0], coords[1] - 25, 0])
                 plat.platforms.pop(0)
                 score += 100
