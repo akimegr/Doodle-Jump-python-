@@ -6,7 +6,7 @@ from util.Spring import *
 from util.Platform import *
 from util.Bullets import *
 from view.GameView import doodleDraw
-from view.GameView import drawPlatforms
+from view.GameView import drawPlatforms, drawBullet, drawEnemies, drawJet, drawLose, drawStart, drawSpring, fillBackground
 
 chanceJet = 970
 
@@ -36,8 +36,8 @@ class Game:
         self.font2 = pygame.font.SysFont("Arial", 42)
         self.font3 = pygame.font.SysFont("Arial", 62)
         self.font4 = pygame.font.SysFont("Arial", 45)
-        self.bullet_png = pygame.image.load("../assets/bac.png")
-        self.bullet_png = pygame.transform.scale(self.bullet_png, (10,10))
+        self.bullet_png = pygame.image.load("../assets/ice-snow-16.png")
+        self.bullet_png = pygame.transform.scale(self.bullet_png, (20,20))
 
     def updatePlayer(self):
         if not doodle.jump:
@@ -118,8 +118,7 @@ class Game:
                     if p[0] <= 0:
                         p[-1] = 1
 
-    def drawBullet(self, x, y):
-        screen.blit(self.bullet_png, (x+5, y))
+
 
     def logicPlatforms(self, timeShootImg):
         global masEnemy2, masEnemy
@@ -168,27 +167,10 @@ class Game:
                 score += 100
             drawPlatforms(p,plat, doodle)
         #
-        if(masEnemy):
-            count = 0
-            for enem in enemy.enemys:
-                screen.blit(masEnemy[count].enemyPlayer, (enem[0], enem[1] - doodle.cameray - 53))
 
-                if (doodle.visible and pygame.Rect(enem[0], enem[1], masEnemy[len(masEnemy)-1].enemyPlayer.get_width(), masEnemy[len(masEnemy)-1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height()))):
-                    pygame.mixer.Sound.play(deadMostr_sound)
-                    doodle.jump = 20
-                    doodle.cameray -= 20
-                    doodle.gravity = 10
-                    doodle.cameray += 10
-                    doodle.visible = False
-                    doodle.playerDead = True
-                count+=1
+        drawEnemies(masEnemy,enemy,doodle, deadMostr_sound)
 
-
-        for jet in jetPack.jetPacks:
-            screen.blit(jetPack.jetPackImg, (jet[0],jet[1]-doodle.cameray-53) )
-            if doodle.visible and pygame.Rect(jet[0],jet[1],jetPack.jetPackImg.get_width(), jetPack.jetPackImg.get_height()).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(), doodle.playerRight.get_height())):
-                doodle.jump = 100
-                doodle.withoutJet = False
+        drawJet(jetPack,doodle)
 
         if(masEnemy2):
             for newNlo in nlo.enemys:
@@ -214,10 +196,7 @@ class Game:
 
         #
         for spring in springForGreen.springs:
-            if spring[-1]:
-                screen.blit(springForGreen.spring_1, (spring[0], spring[1] - doodle.cameray))
-            else:
-                screen.blit(springForGreen.spring, (spring[0], spring[1] - doodle.cameray))
+            drawSpring(spring,springForGreen,doodle)
             if doodle.visible and pygame.Rect(spring[0], spring[1], springForGreen.spring.get_width(), springForGreen.spring.get_height()).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height())):
                 doodle.jump = 50
                 doodle.withoutSpring = False
@@ -283,11 +262,24 @@ class Game:
                     wait = False
                     start = False
                 if (score <= 700):
-                    screen.blit(bg, (0, 0))
+                    bgX = bg
+                    fillBackground(score, bgX)
                 elif (score <= 1000):
-                    screen.blit(bg2, (0, 0))
+                    bgX = bgS
+                    fillBackground(score,bgX)
+                elif (score <= 1500):
+                    bgX = bgS
+                    fillBackground(score,bgX)
+                elif (score <= 2000):
+                    bgX = bgF
+                    fillBackground(score,bgX)
+
+                elif (score <= 1500):
+                    bgX = bg3
+                    fillBackground(score,bgX)
                 elif (score <= 5000000):
-                    screen.blit(bg3, (0, 0))
+                    bgX = bgE
+                    fillBackground(score, bgX)
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -338,7 +330,7 @@ class Game:
                 # if(doodle.bullets):
                     # screen.blit(doodle.playerShoot, (doodle.playerx, doodle.playery - doodle.cameray))
                 for bullet in doodle.bullets:
-                    self.drawBullet(bullet.x, bullet.y)
+                    drawBullet(self.bullet_png,bullet.x, bullet.y)
 
                 self.check_kill()
                 timeShootImg+=1
@@ -346,23 +338,16 @@ class Game:
                 screen.blit(self.font.render("Ваш счёт: "+str(score), -1, (0, 0, 0)), (25, 25))
                 screen.blit(self.font.render("Убито врагов: "+str(scoreEnemy), -1, (0, 0, 0)), (25, 50))
                 # print(doodle.direction)
-
+                lastResult2 = lastResult()
+                maxResult2 = maxResult()
                 if(not wait):
-                    screen.fill((255, 255, 255))
-                    screen.blit(self.font2.render(str("О НЕТ!!!"), -1, (255, 0, 0)), (300, 100))
-                    screen.blit(self.font2.render(str("ВЫ ПРОИГРАЛИ!!!"), -1, (255, 0, 0)), (250, 200))
-                    screen.blit(self.font3.render(str("Набрано очков " + str(check)), -1, (0, 255, 0)), (180, 300))
-                    screen.blit(self.font2.render(str("Последний результат: " + lastResult()), -1, (255, 0, 0)), (190, 400))
-                    screen.blit(self.font3.render(str("Рекорд " + str(maxResult())), -1, (0, 0, 255)), (260, 500))
-                    screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 650))
+
+                    drawLose(self.font2, self.font3, self.font4,check, str(lastResult2), maxResult())
                     pygame.mixer.music.unpause()
 
                 if(not start):
                     wait = False
-                    screen.fill((255, 255, 255))
-                    screen.blit(self.font2.render(str("Последний результат: " + lastResult()), -1, (255, 0, 0)), (190, 300))
-                    screen.blit(self.font3.render(str("Рекорд " + str(maxResult())), -1, (0, 0, 255)), (260, 400))
-                    screen.blit(self.font4.render(str("НАЖМИТЕ ПРОБЕЛ ДЛЯ ПРОДОЛЖЕНИЯ"), -1, (255, 0, 0)), (20, 550))
+                    drawStart(self.font2, self.font3, self.font4, lastResult2, maxResult2)
                     pygame.mixer.music.unpause()
 
 

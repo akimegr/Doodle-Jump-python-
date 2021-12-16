@@ -10,12 +10,12 @@ from util.Bullets import Bullet
 class DoodleJump:
     def __init__(self):
         self.visible = True
-        self.playerRight = pygame.image.load("../assets/right.png").convert_alpha()
-        self.playerRight_1 = pygame.image.load("../assets/right_1.png").convert_alpha()
-        self.playerLeft = pygame.image.load("../assets/left.png").convert_alpha()
-        self.playerLeft_1 = pygame.image.load("../assets/left_1.png").convert_alpha()
+        self.playerRight = pygame.image.load("../assets/ice-right_2x.png").convert_alpha()
+        self.playerRight_1 = pygame.image.load("../assets/ice-right-odskok_2x.png").convert_alpha()
+        self.playerLeft = pygame.image.load("../assets/ice-left_2x.png").convert_alpha()
+        self.playerLeft_1 = pygame.image.load("../assets/ice-left-odskok_2x.png").convert_alpha()
         self.playerDeadImg = pygame.image.load("../assets/deadDoodle.png").convert_alpha()
-        self.playerShoot = pygame.image.load("../assets/shotingDoodle.png").convert_alpha()
+        self.playerShoot = pygame.image.load("../assets/ice-puca_2x.png").convert_alpha()
         self.playerShoot = pygame.transform.scale(self.playerShoot,(90,90))
         self.playerDead = False
         self.direction = 0

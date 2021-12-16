@@ -1,8 +1,8 @@
 
 class Bullet:
     def __init__(self, x, y, plY):
-        self.y = y
-        self.x = x
+        self.y = y+5
+        self.x = x+30
         self.realY = plY
 
 

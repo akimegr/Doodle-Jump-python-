@@ -24,10 +24,16 @@ spring_sound.set_volume(0.2)
 
 bg = pygame.image.load("../assets/background.png")
 bg = pygame.transform.scale(bg, (800, 800))
+bgS = pygame.image.load("../assets/soccer-bck@2x.png")
+bgS = pygame.transform.scale(bgS, (800, 800))
+bgF = pygame.image.load("../assets/underwater-bck@2x.png")
+bgF = pygame.transform.scale(bgF, (800, 800))
 bg2 = pygame.image.load("../assets/secondLocation.png")
 bg2 = pygame.transform.scale(bg2, (800, 800))
 bg3 = pygame.image.load("../assets/bk3.png")
 bg3 = pygame.transform.scale(bg3, (800, 800))
+bgE = pygame.image.load("../assets/space-bck@2x.png")
+bgE = pygame.transform.scale(bgE, (800, 800))
 
 
 def maxResult():
