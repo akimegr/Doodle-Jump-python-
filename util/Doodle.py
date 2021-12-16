@@ -33,6 +33,7 @@ class DoodleJump:
         self.playerRightRacket = pygame.transform.scale(self.playerRightRacket, (150,150))
         self.bullets = []
         self.cool_down_counts = 0
+        self.continuesKillEneme = False
 
     def coolDown(self):
         if self.cool_down_counts > 50:
@@ -47,7 +48,7 @@ class DoodleJump:
             if ev.type == QUIT:
                 sys.exit()
 
-        if (key[K_SPACE] and self.cool_down_counts==0):
+        if (key[K_SPACE] and self.cool_down_counts==0 and not self.playerDead and self.withoutJet and self.withoutSpring):
             bullet = Bullet(self.playerx, self.playery+math.fabs(self.cameray), self.playery)
             self.bullets.append(bullet)
             self.cool_down_counts = 1

@@ -5,7 +5,7 @@ class Platform:
 
     def __init__(self):
         self.green = pygame.image.load("../assets/green.png").convert_alpha()
-        self.platforms = [[400, 500, 0, 0]]
+        self.platforms = [[400, 500, 0, 0]]     #x,y, type,action
 
         self.blue = pygame.image.load(
             "../assets/blue.png").convert_alpha()  #ипикселей, что и на экране
