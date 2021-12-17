@@ -172,7 +172,7 @@ class Game:
                     nlo.enemys.append([coords2[0], coords2[1] - 25, 0])
                 check = random.randint(0, 1000)
                 if check > 950 and platform == 0 and plat.platforms[-1][-2]!=1:  # шанс рандом для пружины
-                    plat.platforms[-1][-2] = 1
+                    plat.platforms[-1][-2] = 1  #посещённая
                     springForGreen.springs.append([coords[0], coords[1] - 25, 0])
                 plat.platforms.pop(0)
                 score += 100
@@ -237,11 +237,17 @@ class Game:
                     # print(timeShootImg)
                     screen.blit(masEnemy2[count].enemyPlayer, (newNlo[0], newNlo[1] - doodle.cameray - 53))
 
-                if (doodle.visible and doodle.gravity and pygame.Rect(newNlo[0], newNlo[1],masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
+                if (doodle.visible and doodle.gravity and pygame.Rect(newNlo[0],
+                                                                      newNlo[1],masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(),
+                                                                      masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
                         doodle.jump = 50
                         newNlo.pop(count)
+                        pygame.mixer.Sound.play(soundsKill)
                         scoreEnemy += 1
-                elif (doodle.visible and pygame.Rect(newNlo[0], newNlo[1],masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery, doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
+                #убийство персонажа
+                elif (doodle.visible and pygame.Rect(newNlo[0], newNlo[1],masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(),
+                                                     masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53).colliderect(pygame.Rect(doodle.playerx, doodle.playery,
+                                                                                                                                          doodle.playerRight.get_width(),doodle.playerRight.get_height()))):
                     pygame.mixer.Sound.play(deadNLO_sound)
                     doodle.jump = 5
                     doodle.cameray -= 1
@@ -278,6 +284,7 @@ class Game:
                                 doodle.playerRight.get_height()))):
                     # enem[0] = -1000
                     # enem[1] = 1000
+                    pygame.mixer.Sound.play(soundsKill)
                     enemy.enemys.pop(countEnemy)
                     masEnemy.pop(countEnemy)##
                     print(doodle.gravity)
@@ -290,8 +297,11 @@ class Game:
             countEnemy = 0
             for newNlo in nlo.enemys:
                # print("self.bullet_png.get_width() "+str(masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width()) +" "+ str(masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height()) )
-                if pygame.Rect(bul.x, bul.realY, self.bullet_png.get_width(), self.bullet_png.get_height()).colliderect(newNlo[0], newNlo[1],  masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53):
+                if pygame.Rect(bul.x, bul.realY, self.bullet_png.get_width(), self.bullet_png.get_height()).colliderect(newNlo[0],
+                                newNlo[1],  masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_width(), masEnemy2[len(masEnemy2) - 1].enemyPlayer.get_height() - 53):
                     nlo.enemys.pop(countEnemy)
+                    pygame.mixer.Sound.play(soundsKill)
+
                     doodle.bullets.remove(bul)
                     scoreEnemy+=1
                     break

@@ -1,5 +1,4 @@
 from util.settings import screen
-from util.settings import soundshoot
 import pygame
 
 def doodleDraw(doodle, ):

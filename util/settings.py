@@ -9,14 +9,17 @@ pygame.mixer.music.load("../sounds/intro.mp3")
 pygame.mixer.music.set_volume(1)
 jump_sound = pygame.mixer.Sound('../sounds/jump.wav')
 jump_sound.set_volume(0.2)
-deadMostr_sound = pygame.mixer.Sound('../sounds/deadMostr.wav')
+deadMostr_sound = pygame.mixer.Sound('../sounds/game_over.wav')
 deadMostr_sound.set_volume(0.2)
 deadNLO_sound = pygame.mixer.Sound('../sounds/deadNLO.wav')
 deadNLO_sound.set_volume(0.2)
-soundshoot = pygame.mixer.Sound('../sounds/shot.wav')
+
 
 pow_sound = pygame.mixer.Sound("../sounds/pow.wav")
 pow_sound.set_volume(0.2)
+
+soundsKill = pygame.mixer.Sound('../sounds/jumping.wav')
+soundsKill.set_volume(0.7)
 
 spring_sound = pygame.mixer.Sound("../sounds/spring.wav")
 spring_sound.set_volume(0.2)

@@ -2,10 +2,13 @@ import math
 
 import pygame
 from pygame.locals import *
+
 import sys
 
 from util.Bullets import Bullet
 
+soundshoot = pygame.mixer.Sound('../sounds/coin.wav')
+soundshoot.set_volume(0.7)
 
 class DoodleJump:
     def __init__(self):
@@ -49,7 +52,9 @@ class DoodleJump:
                 sys.exit()
 
         if (key[K_SPACE] and self.cool_down_counts==0 and not self.playerDead and self.withoutJet and self.withoutSpring):
+
             bullet = Bullet(self.playerx, self.playery+math.fabs(self.cameray), self.playery)
+            pygame.mixer.Sound.play(soundshoot)
             self.bullets.append(bullet)
             self.cool_down_counts = 1
             self.direction = 2
