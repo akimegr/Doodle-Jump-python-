@@ -40,7 +40,7 @@ def drawPlatforms(p, plat, doodle):
     elif p[2] == 1:  # прорисовка синих
         screen.blit(plat.blue, (p[0], p[1] - doodle.cameray))
     elif p[2] == 2:
-        if not p[3]:
+        if not p[-1]:
             screen.blit(plat.red, (p[0], p[1] - doodle.cameray))
         else:
             screen.blit(plat.red_1, (p[0], p[1] - doodle.cameray))
